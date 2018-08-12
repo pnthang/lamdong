@@ -1,11 +1,10 @@
-from flask import Flask, render_template,  url_for, redirect
-from .users.controller import User
-from flask import session
+from flask import Flask, render_template,  url_for, redirect, session
+from .test import User
 
 
 # Define the WSGI application object
 app = Flask(__name__)
-CORS(app)
+
 app.secret_key ="8a3971a57fea4db08d86aa844e8ecefe"
 
 app.register_blueprint(User,url_prefix='/v1/api/user')

@@ -1,7 +1,6 @@
 import json
-from flask import Blueprint,Flask, abort, request, jsonify, redirect
+from flask import Blueprint,Flask, abort, request, jsonify, redirect, session
 from sqlalchemy import create_engine
-from flask import session
 from werkzeug import generate_password_hash, check_password_hash
 
 
