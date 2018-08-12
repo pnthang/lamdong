@@ -77,18 +77,25 @@
             </div>
           </form>
           <ul class="nav navbar-nav">
-				<li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;Chi tiết</a></li>			
+				<li class="hidden-xs">
+					<a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;Chi tiết</a>
+				</li>			
 				<li class="dropdown">
-				<a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe white"></i>&nbsp;&nbsp;Công cụ <b class="caret"></b></a>
-				<ul class="dropdown-menu">
-                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Toàn bản đồ</a></li>
-                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="legend-btn"><i class="fa fa-picture-o"></i>&nbsp;&nbsp;Chú giải</a></li>
-                <li class="divider hidden-xs"></li>
-                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn1"><i class="fa fa-user"></i>&nbsp;&nbsp;Đăng nhập</a></li>				
-				</ul>
-				<li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle white"></i>&nbsp;&nbsp;Thông tin</a></li>
-				</li>            
-				<li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Đăng nhập</a></li>
+					<a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe white"></i>&nbsp;&nbsp;Công cụ <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Toàn bản đồ</a>
+							</li>
+							<li>
+								<a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="legend-btn"><i class="fa fa-picture-o"></i>&nbsp;&nbsp;Chú giải</a>
+							</li>
+						<li class="divider hidden-xs"></li>
+						</ul>
+				</li> 
+				<li>
+					<a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle white"></i>&nbsp;&nbsp;Thông tin</a>
+				</li>				          
+				<li><a href="./v1/api/user/logout" data-toggle="collapse" data-target=".navbar-collapse.in" id="logout-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Đăng xuất</a></li>
             
           </ul>
         </div><!--/.navbar-collapse -->
@@ -149,11 +156,11 @@
             <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Hệ thống giám sát rừng tự động</h4>
           </div>
-		 </div>
-        </div>
-          <div class="modal-footer">
+		  <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
+		 </div>
+        </div>          
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
@@ -173,80 +180,7 @@
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-
-    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Đăng nhập</h4>
-          </div>
-          <div class="modal-body">
-            <form id="login"  data-toggle="validator">
-              <fieldset>
-                <div class="form-group">
-                  <label for="name">Tên đăng nhập:</label>
-                  <input type="text" class="form-control" id="loginUsername" name="loginUsername" required>
-                </div>
-                <div class="form-group">
-                  <label for="password">Mật khẩu:</label>
-                  <input type="password" class="form-control" id="loginPassword" name="loginPassword" required>
-                </div>
-              </fieldset>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Bỏ qua</button>
-				<button type="submit" id="btn-login" class="btn btn-primary" >Đăng nhập</button>
-			  </div>
-            </form>
-          </div>
-			<div class="modal-footer">				
-				<button class="btn btn-primary bg-green" id="signup-btn" data-dismiss="modal">Đăng ký tài khoản</button>
-			</div>			
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-	
-	<div class="modal fade" id="sigupModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Đăng ký tài khoản</h4>
-          </div>
-          <div class="modal-body">
-            <form name="signup" id="signup" data-toggle="validator">
-              <fieldset>
-                <div class="form-group">
-                  <label for="name">Tên đăng nhập:</label>
-                  <input type="text" class="form-control" id="signupUsername" name="signupUsername" required>
-				  <div class="help-block with-errors"></div>
-                </div>
-				<div class="form-group">
-                  <label for="signupEmail">Email:</label>
-                  <input type="email" class="form-control" id="signupEmail" placeholder="Email" name="signupEmail" data-error="Email address is invalid" required>
-				  <div class="help-block with-errors"></div>
-                </div>
-                <div class="form-group">
-                  <label for="password">Mật khẩu:</label>
-                  <input type="password" data-minlength="6" class="form-control" id="signupPassword" name="signupPassword" required>
-				  <div class="help-block">Minimum of 6 characters</div>				  
-                </div>
-				<div class="form-group">
-                  <label for="password">Nhập lại mật khẩu:</label>
-                  <input type="password" class="form-control" id="signupRepassword" data-match="#signupPassword" data-match-error="Password, these don't match" placeholder="Confirm" required>
-				  <div class="help-block with-errors"></div>
-                </div>
-              </fieldset>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Bỏ qua</button>
-				<button type="submit" id="btn-signup" class="btn btn-primary" >Đăng ký</button>
-			  </div>
-            </form>
-          </div>          
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+    </div><!-- /.modal -->    
 
     <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
       <div class="modal-dialog">
@@ -303,6 +237,7 @@
     <script src="../static/js/leaflet.groupedlayercontrol.js"></script>
 	<script src="../static/js/bundle.js"></script>
     <script src="../static/js/app.js"></script>
+	<script src="../static/js/system.js"></script>
 	
 	
 	

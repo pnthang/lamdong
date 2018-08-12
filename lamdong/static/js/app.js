@@ -4,6 +4,8 @@ $(window).resize(function() {
   sizeLayerControl();
 });
 
+
+
 $(document).on("click", ".feature-row", function(e) {
   $(document).off("mouseout", ".feature-row", clearHighlight);
   sidebarClick(parseInt($(this).attr("id"), 10));
@@ -34,57 +36,6 @@ $("#legend-btn").click(function() {
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
-
-$("#login-btn").click(function() {
-  $("#loginModal").modal("show");
-  $(".navbar-collapse.in").collapse("hide");
-  return false;
-});
-
-$("#signup-btn").click(function() {
-  $("#sigupModal").modal("show");
-  $(".navbar-collapse.in").collapse("hide");
-  return false;
-});
-
-$('#login').validator().on('submit', function (e) {
-  if (e.isDefaultPrevented()) {
-    // handle the invalid form...
-  } else {
-	e.preventDefault();
-	$.ajax({			
-            url: '/v1/api/user/login',
-            data: $('#login').serialize(),
-            type: 'POST',
-            success: function(response) {                
-				console.log(response);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-    });
-	$("#loginModal").modal("hide");
-  }
-})
-$('#signup').validator().on('submit', function (e) {
-  if (e.isDefaultPrevented()) {
-    // handle the invalid form...
-  } else {
-	e.preventDefault();
-	$.ajax({
-            url: '/v1/api/user/signup',
-            data: $('#signup').serialize(),
-            type: 'POST',
-            success: function(response) {                
-				console.log(response);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-    });
-	$("#sigupModal").modal("hide");
-  }
-})
 
 
 $("#list-btn").click(function() {
@@ -135,55 +86,78 @@ function sidebarClick(id) {
   }
 }
 
+function syncSidebar() {
+  /* Empty sidebar features */
+  console.log(1);
+  $("#feature-list tbody").empty();  
+  plot_changed.eachLayer(function (layer) {
+    if (map.hasLayer(plot_changed)) {
+      if (map.getBounds().contains(layer.getBounds().getCenter())) {        		
+		$("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getBounds().getCenter().lat + '" lng="' + layer.getBounds().getCenter().lng+ '"><td style="vertical-align: middle;" class="feature-name">'+ layer.feature.properties.lo + '</td><td >'+ layer.feature.properties.khoanh + "-" +  layer.feature.properties.tk +'-'+ layer.feature.properties.ldlr + '('+ layer.feature.properties.changed_square +')</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      }
+    }
+  }); 
+  /* Update list.js featureList */
+  featureList = new List("features", {
+    valueNames: ["feature-name"]
+  });
+  featureList.sort("feature-name", {
+    order: "asc"
+  });
+}
+
 //var fieldsLayer = L.geoJson(null);	
 var plot_changed = L.geoJson(null, {	
-				style: function (feature) {
-					if (feature.properties.changed_points >= 10) {
-						return {
-							color: "red",
-							fill: true,
-							weight: 1,
-							fillOpacity:1,
-							fillColor: '#ff0000',
-							Opacity:1		
-						};
-					} else {
-						return {
-							color: "yellow",
-							fill: true,
-							weight: 1,
-							fillOpacity:1,
-							fillColor: '#fd9c06',
-							Opacity:1		
-						};
-					}					
-				  },
-				onEachFeature: function (feature, layer) {													
-					if (feature.properties) {
-						//console.log(layer);
-					  var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Lô - Khoảnh - Tiểu khu</th><td>" + feature.properties.lo + "-" + feature.properties.khoanh + "-" +  feature.properties.tk + "</td></tr>"+ "<tr><th>Địa chỉ</th><td>" + feature.properties.ddanh + "-"+ feature.properties.xa + "-"+ feature.properties.huyen + "-"+ feature.properties.tinh + "</td></tr>"+ "<tr><th>Ảnh 1</th><td>" + feature.properties.image1 + "</td></tr>"+ "<tr><th>Ảnh 2</th><td>" + feature.properties.image2 + "</td></tr>"+ "<tr><th>Hiện trạng</th><td>" + feature.properties.ldlr + "</td></tr>"+ "<tr><th>Diện tích lô (ha)</th><td>" + feature.properties.dtich + "</td></tr>"+ "<tr><th>Ngày phát hiện</th><td>" + feature.properties.processed_date + "</td></tr>" + "<tr><th>Tọa độ</th><td>" + layer.getBounds().getCenter().lat +":"+ layer.getBounds().getCenter().lng + "</td></tr>" + "</td></tr>" + "<tr><th>Diện tích bất thường</th><td><a class='url-break' href='#' target='_blank'>" + parseFloat(feature.properties.changed_square).toFixed(2) + "(" + feature.properties.image_type +")"+ "</a></td></tr>" + "<table>";
-					  layer.on({
-						click: function (e) {					  
-						  $("#feature-title").html("Thông tin chi tiết");
-						  $("#feature-info").html(content);
-						  $("#featureModal").modal("show");
-						  highlight.clearLayers().addLayer(L.marker([layer.getBounds().getCenter().lat, layer.getBounds().getCenter().lng], highlightStyle));	
-						  //layer.setStyle(highlighted);
-						}
-					  });
-					  $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getBounds().getCenter().lat + '" lng="' + layer.getBounds().getCenter().lng+ '"><td style="vertical-align: middle;"><img width="16" height="18" src="../static/img/museum.png"></td><td class="feature-name">'+ feature.properties.lo + "-" + feature.properties.khoanh + "-" +  feature.properties.tk +'-'+ layer.feature.properties.ldlr + '('+ layer.feature.properties.changed_square +')</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');		
-					  fieldSearch.push({
-							name: layer.feature.properties.lo,
-							msdh: layer.feature.properties.ldlr,
-							masothua: layer.feature.properties.changed_square,							
-							source: "Fields",
-							id: L.stamp(layer),
-							lat: layer.getBounds().getCenter().lat,
-							lng: layer.getBounds().getCenter().lng
-						  });
-						}				
-				}
-			});
+	style: function (feature) {
+		console.log(2);
+		if (feature.properties.changed_points >= 10) {
+			return {
+				color: "red",
+				fill: true,
+				weight: 1,
+				fillOpacity:1,
+				fillColor: '#ff0000',
+				Opacity:1		
+			};
+		} else {
+			return {
+				color: "yellow",
+				fill: true,
+				weight: 1,
+				fillOpacity:1,
+				fillColor: '#fd9c06',
+				Opacity:1		
+			};
+		}					
+	  },
+	onEachFeature: function (feature, layer) {													
+		if (feature.properties) {
+			//console.log(layer);
+		  var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Lô - Khoảnh - Tiểu khu</th><td>" + feature.properties.lo + "-" + feature.properties.khoanh + "-" +  feature.properties.tk + "</td></tr>"+ "<tr><th>Địa chỉ</th><td>" + feature.properties.ddanh + "-"+ feature.properties.xa + "-"+ feature.properties.huyen + "-"+ feature.properties.tinh + "</td></tr>"+ "<tr><th>Ảnh 1</th><td>" + feature.properties.image1 + "</td></tr>"+ "<tr><th>Ảnh 2</th><td>" + feature.properties.image2 + "</td></tr>"+ "<tr><th>Hiện trạng</th><td>" + feature.properties.ldlr + "</td></tr>"+ "<tr><th>Diện tích lô (ha)</th><td>" + feature.properties.dtich + "</td></tr>"+ "<tr><th>Ngày phát hiện</th><td>" + feature.properties.processed_date + "</td></tr>" + "<tr><th>Tọa độ</th><td>" + layer.getBounds().getCenter().lat +":"+ layer.getBounds().getCenter().lng + "</td></tr>" + "</td></tr>" + "<tr><th>Diện tích bất thường</th><td><a class='url-break' href='#' target='_blank'>" + parseFloat(feature.properties.changed_square).toFixed(2) + "(" + feature.properties.image_type +")"+ "</a></td></tr>" + "<table>";
+		  layer.on({
+			click: function (e) {					  
+			  $("#feature-title").html("Thông tin chi tiết");
+			  $("#feature-info").html(content);
+			  $("#featureModal").modal("show");
+			  highlight.clearLayers().addLayer(L.marker([layer.getBounds().getCenter().lat, layer.getBounds().getCenter().lng], highlightStyle));	
+			  //layer.setStyle(highlighted);
+			}
+		  });
+		  
+		  $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getBounds().getCenter().lat + '" lng="' + layer.getBounds().getCenter().lng+ '"><td style="vertical-align: middle;" class="feature-name">'+ layer.feature.properties.lo + '</td><td >'+ layer.feature.properties.khoanh + "-" +  layer.feature.properties.tk +'-'+ layer.feature.properties.ldlr + '('+ layer.feature.properties.changed_square +')</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+		  fieldSearch.push({
+				name: layer.feature.properties.lo,
+				msdh: layer.feature.properties.ldlr,
+				masothua: layer.feature.properties.changed_square,							
+				source: "Fields",
+				id: L.stamp(layer),
+				lat: layer.getBounds().getCenter().lat,
+				lng: layer.getBounds().getCenter().lng
+			  });
+			}				
+	}
+});
+
 function load_plot_changed(data) {    
     plot_changed.addData(data);	
     map.addLayer(plot_changed);	
@@ -195,13 +169,13 @@ function get_plot_changed() {
   //console.log(plot_maxzoom);
   if(map.getZoom() >= plot_maxzoom){
 	$("#feature-list tbody").empty();
-	var owsrootUrl = 'http://langbiang1.dbcr.info:8080/geoserver/wfs';
+	var owsrootUrl = 'https://map.dbcr.info:8443/ows';
 	var defaultParameters = {
 		service : 'WFS',
 		version : '2.0',
 		request : 'GetFeature',	
-		count:30,
-		bbox: map.getBounds().getSouth()  +','+map.getBounds().getWest() +','+map.getBounds().getNorth() +','+map.getBounds().getEast(),
+		count:100,
+		//bbox: map.getBounds().getSouth()  +','+map.getBounds().getWest() +','+map.getBounds().getNorth() +','+map.getBounds().getEast(),
 		typeName : 'fms:mp_lba_plot_changed',
 		outputFormat : 'text/javascript',
 		format_options : 'callback:getJson',	
@@ -209,7 +183,7 @@ function get_plot_changed() {
 	};
 	var parameters = L.Util.extend(defaultParameters);
 	var URL = owsrootUrl + L.Util.getParamString(parameters);
-	//console.log(URL);
+	console.log(URL);
 	var fields = null;
 	var ajax = $.ajax({
 		url : URL,
@@ -231,34 +205,27 @@ function get_plot_changed() {
 	}
 } 
 
+
+	
 /* Basemap Layers */
 
-var ArcGiS = L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+var ArcGiS = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
   attribution: '&copy; <a href="http://www.esri.com/">Esri</a>'
 });
 
-var cartoLight = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
-});
-
-var mbAttr = 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-			'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-			'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-		mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
-
-var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr}),
-	streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr});
-		
-var BING_KEY = 'AuhiCJHlGzhg93IqUH_oCpl_-ZUrIE6SPftlyGYUvr9Amx5nzA-WqGcPquyFZl4L'
-var bingLayer = L.tileLayer.bing(BING_KEY);
-
 /* Overlay Layers */
-var geoUrl = 'http://langbiang1.dbcr.info:8080/geoserver/wms?';	
-var mp_lba_zone = L.tileLayer.wms(geoUrl,{layers: 'mp_lba_zone',format: 'image/png',transparent: true});
-var hotspot = L.tileLayer.wms(geoUrl,{layers: 'cbdbcr:hotspot',format: 'image/png',transparent: true});
+var geoUrl = 'https://map.dbcr.info:8443/wms?';	
+var mp_lba_forest = L.tileLayer.wms(geoUrl,{layers: 'fms:mp_lba_forest',format: 'image/png',transparent: true});
+mp_lba_forest.options.crs = L.CRS.EPSG4326;
+
 var mp_lba_boundary = L.tileLayer.wms(geoUrl,{layers: 'fms:mp_lba_boundary_merge',format: 'image/png',transparent: true});	
+mp_lba_boundary.options.crs = L.CRS.EPSG4326;
+
 var mp_lba_mining = L.tileLayer.wms(geoUrl,{layers: 'fms:mp_lba_mining',format: 'image/png',transparent: true});
-var mp_lba_boundary_region = L.tileLayer.wms(geoUrl,{layers: 'fms:mp_lba_boundary_region',format: 'image/png',transparent: true});	
+mp_lba_mining.options.crs = L.CRS.EPSG4326;
+
+var mp_lba_boundary_region = L.tileLayer.wms(geoUrl,{SrsName : 'EPSG:4326',layers: 'fms:mp_lba_boundary_region',format: 'image/png',transparent: true});	
+mp_lba_boundary_region.options.crs = L.CRS.EPSG4326;
 
 
 var highlight = L.geoJson(null);
@@ -272,7 +239,7 @@ var highlightStyle = {
 map = L.map("map", {
   zoom: 10,
   center: [12.0113, 108.4194],
-  layers: [ArcGiS,plot_changed,mp_lba_boundary_region],
+  layers: [ArcGiS,mp_lba_boundary_region],
   zoomControl: false,  
   attributionControl: false
 });
@@ -282,7 +249,8 @@ map = L.map("map", {
 /* Filter sidebar feature list to only show features in current map bounds */
 map.on("moveend", function (e) {
   //get_point_changed();
-  get_plot_changed();
+  //get_plot_changed();
+  syncSidebar();
 });
 
 
@@ -291,8 +259,7 @@ map.on("click", function(e) {
   highlight.clearLayers();
 });
 
- // get_point_changed();
-  get_plot_changed();
+ 
 /* Attribution control */
 function updateAttribution(e) {
   $.each(map._layers, function(index, layer) {
@@ -371,6 +338,8 @@ var locateControl = L.control.locate({
 }).addTo(map);
 
 
+get_plot_changed();
+
 
 /* Larger screens get expanded layer control and visible sidebar */
 if (document.body.clientWidth <= 767) {
@@ -386,15 +355,12 @@ var baseLayers = {
 var groupedOverlays = {
   "Dữ liệu nền": {		
 	"Ranh giới ": mp_lba_boundary_region,
-	"Hiện trạng rừng": mp_lba_zone,	
+	"Hiện trạng rừng": mp_lba_forest,	
 	"Điểm khai thác":mp_lba_mining
   },
   "Cảnh báo mất rừng": {    
 	"Lô rừng cảnh báo": plot_changed,	
-  },
-  "Cảnh báo cháy rừng": {    		
-	"Điểm cháy vệ tinh 24h": hotspot
-  },
+  }
   
 };
 

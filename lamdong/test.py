@@ -1,19 +1,20 @@
 import json
-from flask import Blueprint,Flask, abort, request, jsonify
+from flask import Blueprint,Flask, abort, request, jsonify, redirect
 from sqlalchemy import create_engine
+from flask import session
 from werkzeug import generate_password_hash, check_password_hash
 
 
 POSTGRES_URL="127.0.0.1:5432"
 POSTGRES_USER="postgres"
-POSTGRES_PW="root"
+POSTGRES_PW="Inno@2018"
 POSTGRES_DB="test"
 	
 db_string ='postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
 
 User = Blueprint('User',__name__)
 
-@User.route('/user/signup',methods=['POST'])
+@User.route('/signup',methods=['POST'])
 def addUser():	
 	# read the posted values from the UI
 	_username = request.form['signupUsername']
@@ -32,20 +33,20 @@ def addUser():
 	else:
 		return json.dumps({'error':'Missing data, user created unsuccessful !'})
 	
-@User.route('/user/login',methods=['POST'])
+@User.route('/login',methods=['POST'])
 def loginUser():	
 	# read the posted values from the UI
 	_username = request.form['loginUsername']
 	_password = request.form['loginPassword']		
 	
     # validate the received values
-	if (_username and _password):
-		_password = generate_password_hash(_password)		
+	if (_username and _password):		
 		result = loadUser(_username)
-		if (_password == result):
-			return json.dumps({'message':'User login successfully !'})
+		if check_password_hash(str(result[0][0]),_password):
+			session['user'] = _username
+			return redirect('/')			
 		else:
-			return json.dumps({'error':'User login unsuccessful !'})
+			return json.dumps({'error':'Login unsuccessful!' })
 
 	#if not request.get_json(force=True):
 	#	abort(400)			
@@ -59,7 +60,12 @@ def getUsers():
 		users.append(a)
 	return jsonify(users) 
 
-
+@User.route('/logout')
+def logout():
+	if session.get('user'):	
+		session.pop('user',None)
+		return redirect('/')
+	
 def addNew(username,password,email):
 	db = create_engine(db_string)
 	strSQL = "INSERT INTO users(username, password, email) VALUES ('"+username+"','"+password+"', '"+email+"')"
@@ -75,7 +81,7 @@ def getList():
 def loadUser(username):  
 	db = create_engine(db_string)
 	strSQL = "SELECT password FROM users where username='" + username + "'"
-	password = db.execute(strSQL)
+	password = db.execute(strSQL).fetchall()
 	return password	
 
 	
