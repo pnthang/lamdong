@@ -1,0 +1,14 @@
+[Unit]
+Description=uWSGI instance to serve FMS
+After=network.target
+
+[Service]
+User=uflask
+Group=nginx
+WorkingDirectory=/home/uflask/lamdong
+Environment="PATH=/home/uflask/lamdong/fmsenv/bin"
+ExecStart=/home/uflask/lamdong/fmsenv/bin/uwsgi --ini fms.ini
+
+[Install]
+WantedBy=multi-user.target
+

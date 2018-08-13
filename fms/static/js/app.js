@@ -88,7 +88,7 @@ function sidebarClick(id) {
 
 function syncSidebar() {
   /* Empty sidebar features */
-  console.log(1);
+  //console.log(1);
   $("#feature-list tbody").empty();  
   plot_changed.eachLayer(function (layer) {
     if (map.hasLayer(plot_changed)) {
@@ -109,7 +109,7 @@ function syncSidebar() {
 //var fieldsLayer = L.geoJson(null);	
 var plot_changed = L.geoJson(null, {	
 	style: function (feature) {
-		console.log(2);
+		//console.log(2);
 		if (feature.properties.changed_points >= 10) {
 			return {
 				color: "red",
@@ -183,7 +183,7 @@ function get_plot_changed() {
 	};
 	var parameters = L.Util.extend(defaultParameters);
 	var URL = owsrootUrl + L.Util.getParamString(parameters);
-	console.log(URL);
+	//console.log(URL);
 	var fields = null;
 	var ajax = $.ajax({
 		url : URL,

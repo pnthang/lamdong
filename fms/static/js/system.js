@@ -15,7 +15,7 @@ $('#login').validator().on('submit', function (e) {
   } else {
 	e.preventDefault();
 	$.ajax({			
-            url: '/v1/api/user/login',
+            url: '/api/v1/users/login',
             data: $('#login').serialize(),
             type: 'POST',
             success: function(response) {                

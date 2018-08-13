@@ -3,11 +3,12 @@ from sqlalchemy import Column, Integer, String, DateTime,Boolean, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import declarative_base
-
+from fms import app
 from sqlalchemy.dialects.postgresql import JSON
 from flask_bcrypt import Bcrypt
 import jwt
 from datetime import datetime, timedelta
+
 
 class User(Base):
 	__tablename__ = 'users'
@@ -48,7 +49,34 @@ class User(Base):
 		
 	def __repr__(self):
 		return "User[email=%s, name=%s, first_name=%s, last_name=%s]" % (self.username, self.email, self.password, self.last_updated_by)
-
+	
+	def encode_auth_token(self, user_id):
+	#Generates the Auth Token :return: string
+		try:
+			payload = {
+				'exp': datetime.now + datetime.timedelta(days=0, seconds=5),
+				'iat': datetime.now,
+				'sub': user_id
+			}
+			return jwt.encode(
+				payload,
+				app.config.get('JWT_SECRET_KEY'),
+				algorithm='HS256'
+			)
+		except Exception as e:
+			return e
+	
+	@staticmethod
+	def decode_auth_token(auth_token):
+    # Decodes the auth token :param auth_token return: integer|string
+		try:
+			payload = jwt.decode(auth_token, app.config['JWT_SECRET_KEY'])
+			return payload['sub']
+		except jwt.ExpiredSignatureError:
+			return 'Signature expired. Please log in again.'
+		except jwt.InvalidTokenError:
+			return 'Invalid token. Please log in again.'
+	
 class Role(Base):
 	__tablename__ = 'roles'
 	
