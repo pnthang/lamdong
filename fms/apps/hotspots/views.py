@@ -39,9 +39,8 @@ def new_user():
 	
 	# validate the received values
 	if (_username and _password and _email):
-		#user = models.User.query.get(_email)
-		user = db_session.query(models.User).filter(models.User.username==_username).one()
-		if not user:		
+		user = models.User.query.get(_email)
+		if not user:
 			try:
 				user = models.User(username=_username, email=_email, password=_password, created_by='User Registered')
 				db_session.add(user)

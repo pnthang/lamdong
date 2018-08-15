@@ -13,3 +13,6 @@ app.register_blueprint(main_blueprint)
 from fms.apps.users.views import user_blueprint
 app.register_blueprint(user_blueprint, url_prefix="/api/v1")
 
+from fms.apps.reports.views import report_blueprint
+app.register_blueprint(report_blueprint, url_prefix="/api/v1")
+

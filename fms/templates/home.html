@@ -91,10 +91,10 @@
 							</li>
 						<li class="divider hidden-xs"></li>
 						</ul>
-				</li> 
+				</li>
 				<li>
-					<a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle white"></i>&nbsp;&nbsp;Thông tin</a>
-				</li>				          
+					<a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="report-btn"><i class="fa fa-question-circle white"></i>&nbsp;&nbsp;Báo mất rừng</a>
+				</li>
 				<li><a href="./api/v1/users/logout" data-toggle="collapse" data-target=".navbar-collapse.in" id="logout-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Đăng xuất</a></li>
             
           </ul>
@@ -165,6 +165,41 @@
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
+	<div class="modal fade" id="reportModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Báo cáo mất rừng</h4>
+          </div>
+          <div class="modal-body">
+            <form name="report" id="report" data-toggle="validator" enctype=multipart/form-data>
+              <fieldset>				
+                <div class="form-group">
+                  <label for="name">Vị trí:</label>
+                  <input type="text" class="form-control" id="reportLat" name="reportLat" placeholder="Lat">
+				  <input type="text" class="form-control" id="reporLng" name="reporLng" placeholder="Long" >
+                </div>
+				<button type="button" class="btn btn-success" id="get-location-btn" >Lấy vị trí của tôi</button>	
+				<div class="form-group">
+                  <label for="name">Nội dung:</label>
+				  <textarea class="form-control" rows="5" id="reportContent" name="reportContent" required></textarea>                  
+                </div>
+				<div class="form-group">
+                  <label for="signupEmail">Hình ảnh:</label>
+                  <input type="file" class="form-control" id="reportImage" name="reportImage">
+                </div>                
+              </fieldset>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Bỏ qua</button>
+				<button type="submit" id="btn-report" class="btn btn-primary" >Gửi báo cáo</button>
+			  </div>
+            </form>
+          </div>          
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+	
     <div class="modal fade" id="legendModal" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -237,7 +272,7 @@
     <script src="../static/js/leaflet.groupedlayercontrol.js"></script>
 	<script src="../static/js/bundle.js"></script>
     <script src="../static/js/app.js"></script>
-	<script src="../static/js/system.js"></script>
+	<script src="../static/js/report.js"></script>
 	
 	
 	
