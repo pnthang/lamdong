@@ -40,9 +40,9 @@ def new_user():
 	# validate the received values
 	if (_username and _password and _email):
 		#user = models.User.query.get(_email)
-		user = db_session.query(models.User).filter(models.User.username==_username).one()
-		if not user:		
-			try:
+		try:
+			user = db_session.query(models.User).filter(models.User.username==_username).first()
+			if not user:		
 				user = models.User(username=_username, email=_email, password=_password, created_by='User Registered')
 				db_session.add(user)
 				db_session.commit()
@@ -53,18 +53,18 @@ def new_user():
 					'auth_token': auth_token
 				}
 				return make_response(jsonify(responseObject)), 201
-			except Exception as e:
+			else:
 				responseObject = {
 					'status': 'fail',
 					'message': 'Some error occurred. Please try again.'
 				}
-				return make_response(jsonify(responseObject)), 401
-		else:
+				return make_response(jsonify(responseObject)), 202
+		except Exception as e:
 			responseObject = {
 				'status': 'fail',
 				'message': 'Some error occurred. Please try again.'
 			}
-			return make_response(jsonify(responseObject)), 202
+			return make_response(jsonify(responseObject)), 401		
 	else:
 		return jsonify({'error':'Missing data, user created unsuccessful !'})
 

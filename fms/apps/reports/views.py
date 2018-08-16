@@ -54,35 +54,47 @@ def new_report():
 		# read the posted values from the UI		
 		_content = request.form['reportContent']		
 		_lat = str(request.form['reportLat'])
+		if not _lat:
+			_lat=12.0113			
 		_lng = str(request.form['reporLng'])
+		if not _lng:
+			_lng=108.4194
 		_user_report_id = str(session.get('user_id'))		
-		_last_updated_by = str(session.get('user_id'))
+		_last_updated_by = str(session.get('user_id'))		
 		
 		_image_path ='/#'
 		error_message =''
+		report_images=[]
 		# check if the post request has the file part
 		if 'reportImage' not in request.files:
 			error_message = 'No file part'	
-		file = request.files['reportImage']
-        # if user does not select file, browser also
-        # submit a empty part without filename
-		if file.filename == '':
-			error_message = 'No selected file'
-		if file and allowed_file(file.filename):
-			filename = secure_filename(file.filename)
-			file.save(os.path.join(_upload_folder,filename))
-			_image_path = url_for('report.new_report',filename=filename)
-			#_image_path = os.path.join(_upload_folder,filename)
-			image = Image.open(os.path.join(_upload_folder,filename))
-			exif_data = get_exif_data(image)
-			_latlng = get_lat_lon(exif_data)
-			_img_lat =_latlng[0]
-			_img_lng =_latlng[1]
-		# validate the received values
+		files = request.files.getlist('reportImage[]')
+		for file in files:
+			# if user does not select file, browser also
+			# submit a empty part without filename
+			if file.filename == '':
+				error_message = 'No selected file'
+			if file and allowed_file(file.filename):
+				filename = secure_filename(file.filename)
+				file.save(os.path.join(_upload_folder,filename))
+				_image_path = url_for('report.new_report',filename=filename)				
+				image = Image.open(os.path.join(_upload_folder,filename))			
+				_image_metadata = get_exif_data(image)
+				_latlng = get_lat_lon(_image_metadata)
+				
+				_geom = 'SRID=4326;POINT(%s %s)' % (_latlng[0],_latlng[1])	
+				# default current lat lng of device					
+				if not _latlng[0]:
+					_geom = 'SRID=4326;POINT(%s %s)' % (_lat,_lng)
+				report_images.append(models.ReportImage(image_path=_image_path,geom=_geom))				
+				
 		if (_content):				
 			try:
-				report = models.Report(content=_content,image_path=_image_path,lat=_lat,lng=_lng,user_report_id=_user_report_id,last_updated_by=_last_updated_by,img_lat=_img_lat,img_lng=_img_lng)
+				report = models.Report(content=_content,lat=_lat,lng=_lng,user_report_id=_user_report_id,last_updated_by=_last_updated_by)
 				db_session.add(report)
+				for report_image in report_images:
+					report.report_images.append(report_image)
+					db_session.add(report_image)
 				db_session.commit()				
 				responseObject = {
 					'status': 'success',
