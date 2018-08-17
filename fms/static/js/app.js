@@ -224,8 +224,11 @@ mp_lba_boundary.options.crs = L.CRS.EPSG4326;
 var mp_lba_mining = L.tileLayer.wms(geoUrl,{layers: 'fms:mp_lba_mining',format: 'image/png',transparent: true});
 mp_lba_mining.options.crs = L.CRS.EPSG4326;
 
-var mp_lba_boundary_region = L.tileLayer.wms(geoUrl,{SrsName : 'EPSG:4326',layers: 'fms:mp_lba_boundary_region',format: 'image/png',transparent: true});	
+var mp_lba_boundary_region = L.tileLayer.wms(geoUrl,{layers: 'fms:mp_lba_boundary_region',format: 'image/png',transparent: true});	
 mp_lba_boundary_region.options.crs = L.CRS.EPSG4326;
+
+var report_images = L.tileLayer.wms(geoUrl,{layers: 'fms:report_images',format: 'image/png',transparent: true});	
+report_images.options.crs = L.CRS.EPSG4326;
 
 
 var highlight = L.geoJson(null);
@@ -239,7 +242,7 @@ var highlightStyle = {
 map = L.map("map", {
   zoom: 10,
   center: [12.0113, 108.4194],
-  layers: [ArcGiS,mp_lba_boundary_region],
+  layers: [ArcGiS,mp_lba_boundary_region,report_images],
   zoomControl: false,  
   attributionControl: false
 });
@@ -359,7 +362,8 @@ var groupedOverlays = {
 	"Điểm khai thác":mp_lba_mining
   },
   "Cảnh báo mất rừng": {    
-	"Lô rừng cảnh báo": plot_changed,	
+	"Cảnh báo vệ tinh ": plot_changed,
+	"Điểm báo mặt đất": report_images,
   }
   
 };

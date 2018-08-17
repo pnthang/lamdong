@@ -22,7 +22,7 @@ class Report(Base):
 	reported_at = Column(DateTime, default=datetime.now)
 	user_report_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)	
 	report_images = relationship("ReportImage", backref="reports",lazy='dynamic')
-	
+	geom = Column(Geometry(geometry_type='POINT', srid=4326))
 	# System fields
 	is_active = Column(Boolean())
 	is_delete = Column(Boolean())
@@ -36,7 +36,8 @@ class ReportImage(Base):
 	__tablename__ = 'report_images'
 	
 	id = Column(Integer, primary_key=True)	
-	image_path = Column(String(255))			
+	image_path = Column(String(255))
+	t_image_path = Column(String(255))
 	report_id = Column(Integer, ForeignKey('reports.id', ondelete='CASCADE'), nullable=False)	
 	
 	geom = Column(Geometry(geometry_type='POINT', srid=4326))	

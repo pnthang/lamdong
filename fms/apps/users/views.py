@@ -8,8 +8,9 @@ from fms import app
  
 user_blueprint = Blueprint('user',__name__)
  
-@user_blueprint.route('/users')
+@user_blueprint.route('/users',methods=['GET'])
 def load_user(id=None):
+	id = request.args.get('id')
 	res = {}
 	if not id:
 		users = models.User.query.all()
@@ -20,7 +21,7 @@ def load_user(id=None):
 				'password': user.password,				
 			}
 	else:
-		user = models.User.query.get(id)
+		user = db_session.query(models.User).filter(models.User.id==id).first()
 		if not user:
 			abort(404)
 		res = {
