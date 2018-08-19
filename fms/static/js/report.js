@@ -17,13 +17,14 @@ function showPosition(position) {
 	document.getElementById('reporLng').value = position.coords.longitude;		    
 }
 
-$('#report').validator().on('submit', function (e) {  
+$('#report').validator().on('submit', function (e) {
+  $("#loading").show();
   if (e.isDefaultPrevented()) {
     // handle the invalid form...
   } else {
-	e.preventDefault();
-	var form_data = new FormData($('#report')[0]);	 
-	$("#InfoModal").modal("show");	
+	e.preventDefault();	
+	//$("#InfoModal").modal("show");
+	var form_data = new FormData($('#report')[0]);	
 	$.ajax({			
             url: '/api/v1/reports',
             //data: $('#report').serialize(),
@@ -41,7 +42,7 @@ $('#report').validator().on('submit', function (e) {
                 console.log(error);
             }
     });
-	$("#InfoModal").modal("hide");
+	$("#loading").hide();
 	$("#reportModal").modal("hide");
   }
 })

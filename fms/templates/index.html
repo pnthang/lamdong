@@ -60,29 +60,28 @@
   </head>
 
   <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="background-color: #ffffff;">
       <div class="container-fluid">
         <div class="navbar-header">
           <div class="navbar-icon-container">
             <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg white"></i></a>
             <a href="#" class="navbar-icon pull-right visible-xs" id="sidebar-toggle-btn"><i class="fa fa-search fa-lg white"></i></a>
           </div>
-          <a class="navbar-brand" href="#">Hệ thống giám sát rừng Langbiang</a>
+          <div class="navbar-logo" href="#">HỆ THỐNG GIÁM SÁT RỪNG</div>
         </div>
-        <div class="navbar-collapse collapse">
+        <div class="navbar-collapse collapse">		  
           <form class="navbar-form navbar-right" role="search">
             <div class="form-group has-feedback">
                 <input id="searchbox" type="text" placeholder="Search" class="form-control">
                 <span id="searchicon" class="fa fa-search form-control-feedback"></span>
             </div>
           </form>
-          <ul class="nav navbar-nav">
-				<li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;Danh sách</a></li>			
-				<li class="dropdown">				
+		  <ul class="nav navbar-nav navbar-right">
+				<li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-home"></i>&nbsp;&nbsp;Giới thiệu</a></li>			
+				<li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="report-btn"><i class="fa fa-list"></i>&nbsp;&nbsp;Thống kê</a></li>				
+				<li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="help-btn"><i class="fa fa-question-circle"></i>&nbsp;&nbsp;Hướng dẫn</a></li>
 				<li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Đăng nhập</a></li>
-				<li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle white"></i>&nbsp;&nbsp;Thông tin</a></li>
-				</li>				            
-          </ul>
+          </ul>		  
         </div><!--/.navbar-collapse -->
       </div>
     </div>
@@ -91,40 +90,82 @@
       <div id="sidebar">
         <div class="sidebar-wrapper">
           <div class="panel panel-default" id="features">
-            <div class="panel-heading">
-              <h3 class="panel-title">Tìm kiếm
-              <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
-            </div>
+			<div class="panel-heading">
+              <h3 class="panel-title">Khu vực: Langbiang - Lâm Đồng              
+            </div>		  
             <div class="panel-body">
-              <div class="row">
-                <div class="col-xs-8 col-md-8">
-                  <input type="text" class="form-control search" placeholder="Filter" />
-                </div>
-                <div class="col-xs-4 col-md-4">
-                  <button type="button" class="btn btn-primary pull-right sort" data-sort="feature-name" id="sort-btn"><i class="fa fa-sort"></i>&nbsp;&nbsp;Sắp xếp</button>
-                </div>
-              </div>
-            </div>
-            <div class="sidebar-table">
-              <table class="table table-hover" id="feature-list">
-                <thead class="hidden">
-                  <tr>
-                    <th>Icon</th>
-                  <tr>
-                  <tr>
-                    <th>Name</th>
-                  <tr>
-                  <tr>
-                    <th>Chevron</th>
-                  <tr>
-                </thead>
-                <tbody class="list"></tbody>
-              </table>
-            </div>
+				<ul class="nav nav-tabs nav-justified" id="aboutTabs">
+				  <li class="active"><a href="#PlotChanged" data-toggle="tab"><i class="fa fa-cloud-download"></i>&nbsp;Vệ tinh </a></li>				  
+				  <li><a href="#plotLost" data-toggle="tab"><i class="fa fa-photo"></i>&nbsp;Thực địa</a></li>
+				  <li><a href="#searchPlotChanged" data-toggle="tab"><i class="fa fa-search"></i>&nbsp;Tra cứu</a></li>
+				</ul>
+				<div class="tab-content" id="sidebarTabsContent">
+					<div class="tab-pane fade in active" id="PlotChanged">
+						<div class="sidebar-table">
+						  <table class="table table-hover" id="feature-list">
+							<thead class="hidden">
+							  <tr>
+								<th>Location</th>
+							  <tr>
+							  <tr>
+								<th>Status</th>
+							  <tr>
+							  <tr>
+								<th>More</th>
+							  <tr>
+							</thead>
+							<tbody class="list"></tbody>
+						  </table>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="plotLost">
+						<div class="sidebar-table">
+						  <table class="table table-hover" id="lost-plot-list">
+							<thead class="hidden">
+							  <tr>
+								<th>Image</th>
+							  <tr>
+							  <tr>
+								<th>Content</th>
+							  <tr>							  
+							</thead>
+							<tbody class="list"></tbody>
+						  </table>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="searchPlotChanged">
+						<form id="search_plot-form">
+						  <div class="well well-sm">
+							<div class="row">
+							  <div class="col-md-12">
+								<div class="form-group">
+								  <label for="first-name">Lô rừng:</label>
+								  <input type="text" class="form-control" id="plot">
+								</div>
+								<div class="form-group">
+								  <label for="last-name">Chủ rừng:</label>
+								  <input type="text" class="form-control" id="owner">
+								</div>
+								<div class="form-group">
+								  <label for="email">Địa chỉ:</label>
+								  <input type="text" class="form-control" id="address">
+								</div>
+							  </div>							  
+							  <div class="col-md-12">
+								<p>
+								  <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Tra cứu</button>
+								</p>
+							  </div>
+							</div>
+						  </div>
+						</form>
+					  </div>
+				</div>				
+			</div>
           </div>
-        </div>
-      </div>
-      <div id="map"></div>
+		</div>
+	  </div>
+	  <div id="map"></div>
     </div>
     <div id="loading">
       <div class="loading-indicator">
@@ -141,6 +182,9 @@
             <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">Hệ thống giám sát rừng tự động</h4>
           </div>
+		  <div class="modal-body">
+			<h5 class="modal-title">Nội dung đang cập nhật</h5>
+		  </div>
 		  <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
@@ -222,7 +266,120 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
-
+	
+	<div class="modal fade" id="reportModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Thống kê diện tích rừng biến động</h4>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs nav-justified" id="aboutTabs">
+              <li class="active"><a href="#LocationReport" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;Theo đơn vị hành chính</a></li>
+              <li><a href="#ForestReport" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;Theo loại rừng</a></li>
+              <li><a href="#TimeReport" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Theo thời gian</a></li>              
+            </ul>
+            <div class="tab-content" id="locationTabsContent">
+              <div class="tab-pane fade active in" id="LocationReport">                
+                <form id="location-report-form">
+                  <div class="well well-sm">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label for="first-name">Xã:</label>
+                          <select class="form-control">
+							  <option>Lựa chọn</option>
+						  </select>
+                        </div>
+                        <div class="form-group">
+                          <label for="last-name">Huyện:</label>
+                          <select class="form-control">
+							  <option>Lựa chọn</option>
+						  </select>
+                        </div>                        
+                      </div>                      
+                      <div class="col-md-12">
+                        <p>
+                          <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Đồng ý</button>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div  class="tab-pane fade" id="ForestReport">
+                <form id="forest-report-form">
+                  <div class="well well-sm">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label for="first-name">Loại rừng:</label>
+                          <select class="form-control">
+							  <option>Lựa chọn</option>
+						  </select>
+                        </div>
+                      </div>                      
+                      <div class="col-md-12">
+                        <p>
+                          <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Đồng ý</button>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              <div class="tab-pane fade" id="TimeReport">
+                <form id="contact-form">
+                  <div class="well well-sm">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <label for="first-name">Từ ngày:</label>
+                          <input type="text" class="form-control" id="first-name">
+                        </div>
+                        <div class="form-group">
+                          <label for="last-name">Đến ngày:</label>
+                          <input type="text" class="form-control" id="last-email">
+                        </div>                        
+                      </div>                      
+                      <div class="col-md-12">
+                        <p>
+                          <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Đồng ý</button>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+	
+	<div class="modal fade" id="helpModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Hướng dẫn sử dụng</h4>
+          </div>
+		  <div class="modal-body">
+			<h5 class="modal-title">Nội dung đang cập nhật</h5>
+		  </div>
+		  <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+		 </div>
+        </div>          
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal --> 
+	
     <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
       <div class="modal-dialog">
         <div class="modal-content">

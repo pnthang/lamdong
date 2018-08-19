@@ -23,37 +23,45 @@ def allowed_file(filename):
 @report_blueprint.route('/reports',methods=['GET'])
 def load_report(id=None):
 	id = request.args.get('id')
-	res = {}	
+	res = []  
 	if not id:
 		reports = db_session.query(models.Report)		
 		for report in reports:
-			images={}
+			images=[]
 			report_images= db_session.query(models.ReportImage).filter(models.ReportImage.report_id==report.id)			
 			for report_image in report_images:
-				images[report_image.id] = {
-					'image_path':_server_name +'/' + report_image.image_path,
-					't_image_path':_server_name +'/' + report_image.t_image_path
+				i = {
+					'l_image_path':report_image.l_image_path,
+					'm_image_path':report_image.m_image_path,
+					's_image_path':report_image.s_image_path
 				}
-			res[report.id] = {
-				'content': report.content,
-				'reported_at': report.reported_at,				
-				'location': {
-					'lat': report.lat,
-					'long':report.lng,
+				images.append(i)  
+			r = {
+				"type": "Feature",
+				"geometry": {
+					"type": "Point",
+					"coordinates": [report.lng, report.lat]
 				},
-				'images':images
+				"properties": {
+					'content': report.content,
+					'reported_at': report.reported_at,
+					'images':images
+				}
 			}
+			res.append(r)  
 	else:
 		report = db_session.query(models.Report).filter(models.Report.id==id).first()		
 		if not report:
 			abort(404)			
 		report_images= db_session.query(models.ReportImage).filter(models.ReportImage.report_id==report.id)
-		images={}
+		images=[]
 		for report_image in report_images:
 			images[report_image.id] = {
-				'image_path':_server_name +'/' + report_image.image_path,
-				't_image_path':_server_name +'/' + report_image.t_image_path
+				'l_image_path':report_image.l_image_path,
+				'm_image_path':report_image.m_image_path,
+				's_image_path':report_image.s_image_path
 			}
+			images.append(i)
 		res = {
 			'content': report.content,
 			'reported_at': report.reported_at,				
@@ -106,7 +114,7 @@ def new_report():
 				path = os.path.join('fms',_upload_folder, str(session.get('user_id')),location)				
 				if not os.path.exists(path):
 					os.makedirs(path)
-				
+								
 				file.save(os.path.join(path,filename))
 				#_image_path = url_for('static',filename=filename)				
 				_image_path=os.path.join(_upload_folder, str(session.get('user_id')),location,filename)
@@ -115,17 +123,28 @@ def new_report():
 				image = Image.open(os.path.join(path,filename))
 				_image_metadata = get_exif_data(image)
 				_latlng = get_lat_lon(_image_metadata)
+				
+				image.thumbnail((1024, 768), Image.ANTIALIAS)
+				image.save(os.path.join(path,"l_" + filename), "JPEG")
+				_l_image=os.path.join(_upload_folder, str(session.get('user_id')),location,"l_"+ filename)
+				_l_image=_l_image.replace('\\','/')
+				
 				image.thumbnail((320, 240), Image.ANTIALIAS)
-				image.save(os.path.join(path,"t_" + filename), "JPEG")
-				_t_image_path=os.path.join(_upload_folder, str(session.get('user_id')),location,"t_"+ filename)
-				_t_image_path = _t_image_path.replace('\\','/')				
+				image.save(os.path.join(path,"m_" + filename), "JPEG")
+				_m_image=os.path.join(_upload_folder, str(session.get('user_id')),location,"m_"+ filename)
+				_m_image = _m_image.replace('\\','/')			
+				
+				image.thumbnail((160, 120), Image.ANTIALIAS)
+				image.save(os.path.join(path,"s_" + filename), "JPEG")
+				_s_image=os.path.join(_upload_folder, str(session.get('user_id')),location,"s_"+ filename)
+				_s_image=_s_image.replace('\\','/')
 				
 				_geom = 'SRID=4326;POINT(%s %s)' % (_latlng[1],_latlng[0])	
 				# default current lat lng of device					
 				if not _latlng[0]:
 					_geom = 'SRID=4326;POINT(%s %s)' % (_lng,_lat)
 				_report_geom = 'SRID=4326;POINT(%s %s)' % (_lng,_lat)
-				report_images.append(models.ReportImage(image_path=_image_path,t_image_path=_t_image_path,geom=_geom))				
+				report_images.append(models.ReportImage(image_path=_image_path,l_image_path=_l_image,m_image_path=_m_image,s_image_path=_s_image,geom=_geom))				
 				
 		if (_content):				
 			try:

@@ -23,6 +23,18 @@ $("#about-btn").click(function() {
   $("#aboutModal").modal("show");
   $(".navbar-collapse.in").collapse("hide");
   return false;
+}); 
+
+$("#help-btn").click(function() {
+  $("#helpModal").modal("show");
+  $(".navbar-collapse.in").collapse("hide");
+  return false;
+});
+
+$("#report-btn").click(function() {
+  $("#reportModal").modal("show");
+  $(".navbar-collapse.in").collapse("hide");
+  return false;
 });
 
 $("#full-extent-btn").click(function() {
@@ -75,10 +87,17 @@ function clearHighlight() {
 }
 
 function sidebarClick(id) {
-  //console.log(plot_changed.getLayer(id));
-  var layer = plot_changed.getLayer(id);  
-  map.setView([layer.getBounds().getCenter().lat, layer.getBounds().getCenter().lng], 12);
-  layer.fire("click");
+  var tab = $('.nav-tabs .active').text();
+  if (tab.indexOf("Vệ tinh") >=0) {
+	var layer = plot_changed.getLayer(id);  
+	map.setView([layer.getBounds().getCenter().lat, layer.getBounds().getCenter().lng], 12);
+	layer.fire("click");
+  }
+  if (tab.indexOf("Thực địa") >=0) {
+	var layer = plot_reported.getLayer(id);  
+	map.setView([layer.getLatLng().lat, layer.getLatLng().lng], 12);
+	layer.fire("click");
+  }
   /* Hide sidebar and go to the map on small screens */
   if (document.body.clientWidth <= 767) {
     $("#sidebar").hide();
@@ -93,7 +112,7 @@ function syncSidebar() {
   plot_changed.eachLayer(function (layer) {
     if (map.hasLayer(plot_changed)) {
       if (map.getBounds().contains(layer.getBounds().getCenter())) {        		
-		$("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getBounds().getCenter().lat + '" lng="' + layer.getBounds().getCenter().lng+ '"><td style="vertical-align: middle;" class="feature-name">'+ layer.feature.properties.lo + '</td><td >'+ layer.feature.properties.khoanh + "-" +  layer.feature.properties.tk +'-'+ layer.feature.properties.ldlr + '('+ layer.feature.properties.changed_square +')</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+		$("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getBounds().getCenter().lat + '" lng="' + layer.getBounds().getCenter().lng+ '"><td style="vertical-align: middle;" class="feature-name">'+ layer.feature.properties.lo+ "-" + layer.feature.properties.khoanh  + "-" + layer.feature.properties.tk + '</td><td >'+ layer.feature.properties.ldlr + '('+ layer.feature.properties.changed_square +'ha)</td><td style="vertical-align: middle;"><i class="fa fa-chevron pull-center"> Xem chi tiết</i></td></tr>');
       }
     }
   }); 
@@ -109,7 +128,7 @@ function syncSidebar() {
 //var fieldsLayer = L.geoJson(null);	
 var plot_changed = L.geoJson(null, {	
 	style: function (feature) {
-		//console.log(2);
+		//console.log(2);		
 		if (feature.properties.changed_points >= 10) {
 			return {
 				color: "red",
@@ -144,7 +163,7 @@ var plot_changed = L.geoJson(null, {
 			}
 		  });
 		  
-		  $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getBounds().getCenter().lat + '" lng="' + layer.getBounds().getCenter().lng+ '"><td style="vertical-align: middle;" class="feature-name">'+ layer.feature.properties.lo + '</td><td >'+ layer.feature.properties.khoanh + "-" +  layer.feature.properties.tk +'-'+ layer.feature.properties.ldlr + '('+ layer.feature.properties.changed_square +')</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+		  $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getBounds().getCenter().lat + '" lng="' + layer.getBounds().getCenter().lng+ '"><td style="vertical-align: middle;" class="feature-name">'+ layer.feature.properties.lo+ "-" + layer.feature.properties.khoanh  + "-" + layer.feature.properties.tk + '</td><td >'+ layer.feature.properties.ldlr + '('+ layer.feature.properties.changed_square +'ha)</td><td style="vertical-align: middle;"><i class="fa fa-chevron-circle-right pull-center"> Xem chi tiết</i></td></tr>');		  
 		  fieldSearch.push({
 				name: layer.feature.properties.lo,
 				msdh: layer.feature.properties.ldlr,
@@ -155,12 +174,13 @@ var plot_changed = L.geoJson(null, {
 				lng: layer.getBounds().getCenter().lng
 			  });
 			}				
-	}
+	}	
 });
 
 function load_plot_changed(data) {    
     plot_changed.addData(data);	
-    map.addLayer(plot_changed);	
+    map.addLayer(plot_changed);
+	$("#loading").hide();
 };
 
 var plot_maxzoom = 10; 
@@ -168,13 +188,13 @@ function get_plot_changed() {
   /* Empty sidebar features */
   //console.log(plot_maxzoom);
   if(map.getZoom() >= plot_maxzoom){
-	$("#feature-list tbody").empty();
+	//$("#feature-list tbody").empty();
 	var owsrootUrl = 'https://map.dbcr.info:8443/ows';
 	var defaultParameters = {
 		service : 'WFS',
 		version : '2.0',
 		request : 'GetFeature',	
-		count:100,
+		count:30,
 		//bbox: map.getBounds().getSouth()  +','+map.getBounds().getWest() +','+map.getBounds().getNorth() +','+map.getBounds().getEast(),
 		typeName : 'fms:mp_lba_plot_changed',
 		outputFormat : 'text/javascript',
@@ -199,18 +219,74 @@ function get_plot_changed() {
 		  featureList.sort("feature-name", {
 			order: "asc"
 		  });
-		  $("#loading").hide();	
+		  $("#loading").hide();
 	}else{
     map.removeLayer(plot_changed);
 	}
 } 
 
+function load_plot_changed(data) {    
+    plot_changed.addData(data);	
+    map.addLayer(plot_changed);
+	$("#loading").hide();
+};
 
+
+
+get_plot_reported();
+
+var plot_reported = L.geoJson(null, {	
+	pointToLayer: function (feature, latlng) {
+		return L.marker(latlng, {
+		  icon: L.icon({
+			iconUrl: feature.properties.images[0].s_image_path,
+			iconSize: [68, 74],
+			iconAnchor: [12, 28],
+			popupAnchor: [0, -25]
+		  }),
+		  title: feature.properties.content,
+		  riseOnHover: true
+		});
+	  },
+	onEachFeature: function (feature, layer) {													
+		if (feature.properties) {
+		  var images = ''
+		  d = feature.properties.images;		  
+		  for (var i = 0; i < d.length; i++) {
+			images += '<a href="'+d[i].l_image_path+'" target="_blank"><img src="' + d[i].s_image_path + '"/></a>';			
+		  }
+		  var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Nội dung</th><td>" + feature.properties.content + "</td></tr><tr><th>Thời gian</th><td>" + feature.properties.reported_at + "</td></tr><tr><th>Vị trí</th><td>" + parseFloat(layer.getLatLng().lng).toFixed(2) + " : " + parseFloat(layer.getLatLng().lat).toFixed(2) + "</td></tr><tr><td colspan='2' align='center'>" + images + "</td></tr><table>";
+		  layer.on({
+			click: function (e) {					  
+			  $("#feature-title").html("Thông tin chi tiết");
+			  $("#feature-info").html(content);
+			  $("#featureModal").modal("show");
+			  highlight.clearLayers().addLayer(L.marker([layer.getLatLng().lat, layer.getLatLng().lng], highlightStyle));	
+			  //layer.setStyle(highlighted);
+			}
+		  });
+		  $("#lost-plot-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;" class="feature-name"><img src="' + layer.feature.properties.images[0].s_image_path  + '" /></td><td ><b>'+ layer.feature.properties.content + '</b><br>'+layer.feature.properties.reported_at+'</td></tr>');
+		}
+	}
+});
+
+function get_plot_reported() {	
+	var url = '/api/v1/reports';			
+	$.getJSON(url, function(data) {
+		plot_reported.addData(data);
+		map.addLayer(plot_reported);
+	});	
+}
 	
 /* Basemap Layers */
 
 var ArcGiS = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
   attribution: '&copy; <a href="http://www.esri.com/">Esri</a>'
+});
+
+var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
 });
 
 /* Overlay Layers */
@@ -240,9 +316,10 @@ var highlightStyle = {
 };
 
 map = L.map("map", {
-  zoom: 10,
-  center: [12.0113, 108.4194],
-  layers: [ArcGiS,mp_lba_boundary_region,report_images],
+  zoom: 16,
+  //center: [12.0113, 108.4194],
+  center: [52.11,-106.60],
+  layers: [cartoLight,mp_lba_boundary_region,plot_reported],
   zoomControl: false,  
   attributionControl: false
 });
@@ -352,6 +429,7 @@ if (document.body.clientWidth <= 767) {
 }
 
 var baseLayers = {
+  "Đường phố":cartoLight,
   "Ảnh vệ tinh": ArcGiS,    
 };
 
@@ -362,8 +440,8 @@ var groupedOverlays = {
 	"Điểm khai thác":mp_lba_mining
   },
   "Cảnh báo mất rừng": {    
-	"Cảnh báo vệ tinh ": plot_changed,
-	"Điểm báo mặt đất": report_images,
+	"Điểm vệ tinh ": plot_changed,
+	"Điểm thực địa": plot_reported,
   }
   
 };

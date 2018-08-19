@@ -37,7 +37,9 @@ class ReportImage(Base):
 	
 	id = Column(Integer, primary_key=True)	
 	image_path = Column(String(255))
-	t_image_path = Column(String(255))
+	l_image_path = Column(String(255))
+	m_image_path = Column(String(255))
+	s_image_path = Column(String(255))
 	report_id = Column(Integer, ForeignKey('reports.id', ondelete='CASCADE'), nullable=False)	
 	
 	geom = Column(Geometry(geometry_type='POINT', srid=4326))	

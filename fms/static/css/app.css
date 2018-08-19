@@ -11,7 +11,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 #sidebar {
   display: block;
-  width: 250px;
+  width: 30%;
   height: 100%;
   max-width: 100%;
   float: left;
@@ -50,10 +50,10 @@ input[type="radio"], input[type="checkbox"] {
   color: #FFFFFF;
 }
 .panel-heading{
-   width: 250px;
+   width: 100%;
 }
 .panel-body{
-  width: 250px;
+  width: 100%;
 }
 .feature-row {
   cursor: pointer;
@@ -87,7 +87,14 @@ input[type="radio"], input[type="checkbox"] {
 .navbar .navbar-brand {
   font-weight: bold;
   font-size: 25px;
-  color: #FFFFFF;
+  color: #00814f;
+}
+
+.navbar .navbar-logo {
+  font-weight: bold;
+  font-size: 25px;
+  color: #00814f;
+  margin-top:6px;
 }
 .navbar-collapse.in {
   overflow-y: hidden;
@@ -146,6 +153,19 @@ input[type="radio"], input[type="checkbox"] {
   height: 34px;
   line-height: 34px;
   text-align: center;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #00814f;
+	font-weight: bold;
+	font-size: 16px;
+}
+.navbar-inverse .navbar-nav>li>a:hover {
+    color: #8bc34a;
+	font-weight: bold;
+	font-size: 16px;
+}
+.navbar-inverse {
+	border-color: #ddd;
 }
 @media (max-width: 992px) {
   .navbar .navbar-brand {
