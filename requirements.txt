@@ -21,7 +21,7 @@ marshmallow==2.15.3
 Pillow==5.2.0
 psycopg2==2.7.5
 pycparser==2.18
-PyJWT==1.6.4
+PyJWT==2.4.0
 python-dateutil==2.7.3
 python-editor==1.0.3
 python-thumbnails==0.5.1
